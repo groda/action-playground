@@ -20,14 +20,13 @@ jobs:
   List-Notebook-Files:
     runs-on: ubuntu-latest
     steps:
-    - name: Do it
-      uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - run: echo 📔 Notebook: ${{ inputs.notebook }}
       - run: echo "📝 Listing file"
       - name: List file provided as input
-        run: |
+        uses: actions/checkout@v4
+      - run: |
           ls ${{ github.workspace }}/${{ inputs.notebook }} 
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: 🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀
