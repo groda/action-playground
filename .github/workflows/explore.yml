@@ -2,12 +2,12 @@ name: Explore Github actions
 run-name: Exploring 🚀
 ## see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on: 
-  #workflow_dispatch
+  workflow_dispatch
   # trigger workflow on push to the master branch of .* files
-  push:
-     branches: [master, dev]
-     paths:
-       - '/*.*'
+  #push:
+  #   branches: [master, dev]
+  #   paths:
+  #     - '/*.*'
 permissions:
   contents: write
 jobs:
