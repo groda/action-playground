@@ -9,8 +9,8 @@ run-name: List file
 on: 
   # needs to be called manually
   workflow_dispatch:
-  inputs:
-    notebook:
+    inputs:
+      notebook:
         description: 'Input the notebook filename'
         required: true
         type: string
