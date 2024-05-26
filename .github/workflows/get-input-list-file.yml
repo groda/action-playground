@@ -34,4 +34,4 @@ jobs:
             echo "File $FILE does not exist."
           fi
       - run: echo "🍏 This job's status is ${{ job.status }}."
-      - run: 🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀
+      - run: echo "🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀"
