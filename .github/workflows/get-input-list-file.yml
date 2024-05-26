@@ -1,0 +1,33 @@
+name: List one file 
+run-name: List file 
+# work in progress
+# this action runs two jobs: List-Notebook-Files and Run-Notebooks
+# Run-Notebooks converts ipynb files to Python with nbconvert and runs them on the Ubuntu box
+# (at the moment this is done only for one file since not all notebook files are ready)
+# also it would be better to create an image instead of downloading software every time
+## see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+on: 
+  # needs to be called manually
+  workflow_dispatch
+  inputs:
+    notebook:
+        description: 'Input the notebook filename'
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  List-Notebook-Files:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo " 📔 Notebook: ${{ inputs.notebook }} 
+ - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - run: echo "📝 Listing file"
+      - name: List file provided as input
+        run: |
+          ls ${{ github.workspace }}/${{ inputs.notebook }} 
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: 🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀
