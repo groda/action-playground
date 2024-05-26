@@ -26,6 +26,12 @@ jobs:
       - name: List file provided as input
         uses: actions/checkout@v4
       - run: |
-          ls ${{ github.workspace }}/${{ inputs.notebook }} 
+          FILE=${{ github.workspace }}/${{ inputs.notebook }}
+          if [ -f $FILE ]; then
+            echo "File $FILE exists."
+            ls $FILE
+          else
+            echo "File $FILE does not exist."
+          fi
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: 🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀
