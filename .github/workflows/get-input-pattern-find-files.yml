@@ -1,5 +1,5 @@
-name: List one file 
-run-name: List file 
+name: List files matching pattern 
+run-name: List files 
 # work in progress
 # this action runs jobs: 
 # List-Input-File gets file name from input and prints ✅ if file exists in the repository 
