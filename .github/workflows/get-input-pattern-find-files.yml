@@ -27,7 +27,15 @@ jobs:
         uses: actions/checkout@v4
       - run: |
           FILE=${{ inputs.notebook }}
-          f=$(find . -name "${FILE}")
+          f=$(find . -name "${FILE}" -print0)
+          # The -print0 option in the find command is used to output the filenames 
+          # followed by a null character (\0) instead of a newline (\n). 
+          # This is particularly useful for handling filenames that contain special characters,
+          # such as spaces, newlines, or other non-printing characters, which can cause issues 
+          # in shell scripts.
+          # xargs -0 reads the input as a null-separated list of strings. 
+          # This ensures that filenames with embedded spaces, newlines, or other special characters 
+          # are correctly processed as individual items.
           if [ -n "$f" ]; then
           echo "✅"
           echo "File $FILE exists."
