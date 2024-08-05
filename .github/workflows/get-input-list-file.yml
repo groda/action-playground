@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
       - run: |
           # Questions: can I have comments after the run | (I think it should be OK)?
-          # Will I be able to use wildcards? Is ppttern matching going to work?
+          # Will I be able to use wildcards? Is pattern matching going to work?
           # Let'see
           FILE=${{ inputs.notebook }}
           f=$(find . -name "${FILE}")
