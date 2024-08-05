@@ -1,17 +1,16 @@
 name: List one file 
 run-name: List file 
 # work in progress
-# this action runs two jobs: List-Notebook-Files and Run-Notebooks
-# Run-Notebooks converts ipynb files to Python with nbconvert and runs them on the Ubuntu box
-# (at the moment this is done only for one file since not all notebook files are ready)
-# also it would be better to create an image instead of downloading software every time
+# this action runs jobs: 
+# List-Input-File gets file name from input and prints ✅ if file exists in the repository 
+# (and ❌ if the file does not exist)
 ## see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on: 
   # needs to be called manually
   workflow_dispatch:
     inputs:
       notebook:
-        description: 'Input the notebook filename'
+        description: 'Input the filename'
         required: true
         type: string
 permissions:
@@ -21,17 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      # can I search directly on the repo? Without cloning to the runner?
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - run: echo "📝 Listing file"
       - name: List file provided as input
         uses: actions/checkout@v4
       - run: |
-          FILE=${{ github.workspace }}/${{ inputs.notebook }}
-          if [ -f $FILE ]; then
-            echo "File $FILE exists."
-            ls $FILE
+          # Questions: can I have comments after the run | (I think it should be OK)?
+          # Will I be able to use wildcards? Is ppttern matching going to work?
+          # Let'see
+          FILE=${{ inputs.notebook }}
+          f=$(find . -name "${FILE}")
+          if [ -n "$f" ]; then
+          echo "✅"
+          echo "File $FILE exists."
           else
-            echo "File $FILE does not exist."
+          echo "❌"
+           echo "File $FILE does not exist."
           fi
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: echo "🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀"
