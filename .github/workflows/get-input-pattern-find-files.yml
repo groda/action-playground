@@ -31,7 +31,7 @@ jobs:
           if [ -n "$f" ]; then
           echo "✅"
           echo "File $FILE exists."
-          echo $f
+           echo "$f" | xargs -0 -I {} echo "{}"
           else
           echo "❌"
            echo "File $FILE does not exist."
