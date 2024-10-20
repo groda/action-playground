@@ -1,0 +1,21 @@
+name: List files matching pattern 
+run-name: List files 
+on: 
+  # needs to be started manually
+  workflow_dispatch:
+    inputs:
+      my_var:
+        description: 'Input a string'
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  List-Input-File:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "🔶🔶🔶🔶🔶🔶🔶🔶🔶🔶🔶🔶"
+          echo ${{ inputs.my_var }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "🎉 Woohoo! Your action is complete! Have an amazing day and happy coding! 🚀"
