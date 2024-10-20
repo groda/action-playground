@@ -1,5 +1,5 @@
 name: Read a string from input
-run-name: List files 
+run-name: Read input
 on: 
   # needs to be started manually
   workflow_dispatch:
