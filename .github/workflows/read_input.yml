@@ -1,4 +1,4 @@
-name: List files matching pattern 
+name: Read a string from input
 run-name: List files 
 on: 
   # needs to be started manually
