@@ -1,5 +1,5 @@
 name: Install Java 11 on Ubuntu latest and print path
-run-name: Java path ➡️ 
+run-name: ➡️ Java path
 ## see https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 on:
   workflow_dispatch
@@ -8,9 +8,6 @@ permissions:
 jobs:
   Install-Java:
     runs-on: ubuntu-latest
-    # Define job-level environment variables here if needed for multiple steps
-    # env:
-    #   JOB_VARIABLE: "This is a job-level variable"
     steps:
     # Install Java (see: https://github.com/actions/setup-java)
     - name: Install Java 11
@@ -18,24 +15,17 @@ jobs:
       with:
         distribution: 'temurin' # See 'Supported distributions' for available options
         java-version: '11'
-        # Optional: Set this to true if you want the setup-java action to add Java to the PATH
-        # This is usually the default, but good to be explicit for debugging
         cache: 'maven' # Example cache, adjust as needed or remove if not using
-        # architecture: x64 # Specify if you need a different architecture
-    - name: Print all environment variables
-      run: env
-    # Corrected way to define and use an environment variable within a single step
+    # This is the corrected section for printing one environment variable
     - name: Print a specific environment variable
       env:
         MY_VARIABLE: "Hello, World!"
       run: echo "The value of MY_VARIABLE is: $MY_VARIABLE"
-    # If you wanted MY_VARIABLE to be available to other steps, you'd export it
-    # in an earlier step, or define it at a higher scope (job/workflow).
-    # For example, to make it available to subsequent steps:
-    # - name: Export an environment variable
-    #   run: echo "MY_SHARED_VARIABLE=Value from previous step" >> $GITHUB_ENV
+    # End of corrected section
 
-    # Runs a set of commands using the runners shell
+    - name: Print all environment variables
+      run: env
+
     - name: Verify Java Installation and Path
       run: |
         echo "JAVA_HOME is: $JAVA_HOME" # Should be set by setup-java
@@ -45,5 +35,3 @@ jobs:
     - name: List files currently in the workspace
       run: |
         ls -la ${{ github.workspace }}
-        # Or if you only want to list top-level items in the workspace:
-        # ls -la ${{ github.workspace }}/*
