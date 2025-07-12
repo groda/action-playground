@@ -6,20 +6,20 @@ name: Run Script on Repo File (docs in comments)
 
 # A more descriptive name that appears next to the workflow run in the UI.
 # This helps in quickly identifying what the run was about.
-run-name: ➡️ Run Script on Repo File
+run-name: ➡️ Run Script on Repo File (docs)
 
 # Define when this workflow should run.
 on:
   # Trigger the workflow on 'push' events.
-  push:
+  #push:
     # Specifically, only run when changes are pushed to the 'main' branch.
     # You can list multiple branches here, e.g., ['main', 'develop'].
-    branches:
-      - main 
+    #branches:
+    #  - main 
 
   # Uncomment the line below if you want to allow manual triggering of this workflow
   # from the 'Actions' tab in your GitHub repository.
-  # workflow_dispatch: # Allows manual triggering from the GitHub UI
+   workflow_dispatch: # Allows manual triggering from the GitHub UI
 
 # Define the permissions required by this workflow.
 # 'contents: write' is crucial if the workflow needs to commit changes (like saving output files)
