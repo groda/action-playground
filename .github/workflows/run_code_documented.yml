@@ -140,4 +140,7 @@ jobs:
           # was identical to an existing one, though less common with executed notebooks).
           git commit -m "Automated: Execute JAVA_HOME.ipynb and save output" || echo "No changes to commit"
           # Push the committed changes to the remote repository.
-          git push
+          # Pull latest changes before pushing
+          git pull --rebase origin main
+          # Now push your changes
+          git push origin main
