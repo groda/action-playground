@@ -1,0 +1,75 @@
+name: Run Script on Data File
+run-name: ➡️ Run Script on Repo File
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+  # workflow_dispatch: # Allows manual triggering from the GitHub UI
+  
+permissions:
+  contents: write
+  
+jobs:
+  process-file:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+    # Install Java (see: https://github.com/actions/setup-java)
+      - name: Install Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '11'
+          
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Essential step to get your code
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x' # Specify the Python version
+
+      - name: Install Jupyter and nbconvert
+        run: |
+          pip install jupyter nbconvert ipykernel
+
+      # Install requirements
+      - name: Install requirements
+        run: |
+          if [ -f requirements.txt ]; then
+            echo "requirements.txt found. Installing dependencies."
+            python --version
+            python -m pip install -r requirements.txt
+            echo "requirements_found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "requirements.txt not found. Skipping dependency installation."
+            echo "requirements_found=false" >> "$GITHUB_OUTPUT"
+          fi
+          
+      - name: Execute notebook and save output
+        run: |
+          # Define the output file name. We'll add '_executed' to the original name.
+          # For example, JAVA_HOME.ipynb will become JAVA_HOME_executed.ipynb
+          INPUT_NOTEBOOK="JAVA_HOME.ipynb"
+          OUTPUT_NOTEBOOK="${INPUT_NOTEBOOK%.ipynb}_executed.ipynb"
+
+          # Run nbconvert with --output to specify the output file
+          sudo env PATH=$PATH jupyter nbconvert \
+            --log-level=ERROR \
+            --to notebook \
+            --execute "$INPUT_NOTEBOOK" \
+            --output "$OUTPUT_NOTEBOOK"
+
+          echo "Notebook executed and saved as $OUTPUT_NOTEBOOK"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add . # Add all changes, including the new notebook
+          git commit -m "Automated: Execute JAVA_HOME.ipynb and save output" || echo "No changes to commit"
+          git push
+      - name: Run script on JAVA_HOME.ipynb
+        run: |
+          sudo env PATH=$PATH jupyter nbconvert --log-level=ERROR --to notebook --execute JAVA_HOME.ipynb
