@@ -13,6 +13,7 @@ permissions:
 jobs:
   process-file:
     runs-on: ubuntu-latest # Use the latest Ubuntu runner
+    if: github.actor != 'github-actions[bot]' # to prevent re-triggering when pushing
 
     steps:
     # Install Java (see: https://github.com/actions/setup-java)
