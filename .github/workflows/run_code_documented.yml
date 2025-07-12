@@ -2,7 +2,7 @@
 # back to the repository. It also handles dependency installation and Java setup.
 
 # Workflow's display name in the GitHub Actions UI
-name: Run Script on Data File
+name: Run Script on Repo File (docs in comments)
 
 # A more descriptive name that appears next to the workflow run in the UI.
 # This helps in quickly identifying what the run was about.
