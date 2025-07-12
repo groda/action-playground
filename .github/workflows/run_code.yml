@@ -70,6 +70,4 @@ jobs:
           git add . # Add all changes, including the new notebook
           git commit -m "Automated: Execute JAVA_HOME.ipynb and save output" || echo "No changes to commit"
           git push
-      - name: Run script on JAVA_HOME.ipynb
-        run: |
-          sudo env PATH=$PATH jupyter nbconvert --log-level=ERROR --to notebook --execute JAVA_HOME.ipynb
+      
