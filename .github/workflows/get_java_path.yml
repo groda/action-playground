@@ -8,34 +8,30 @@ permissions:
 jobs:
   Install-Java:
     runs-on: ubuntu-latest
-    # This 'env' block (if uncommented) would set environment variables for the entire job
-    # env:
-    #   JOB_LEVEL_VAR: "This is available to all steps in this job"
     steps:
-    # Install Java (see: https://github.com/actions/setup-java)
-    - name: Install Java 11
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin' # See 'Supported distributions' for available options
-        java-version: '11'
-        cache: 'maven' # Example cache, adjust as needed or remove if not using
+      # Install Java (see: https://github.com/actions/setup-java)
+      - name: Install Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '11'
+          cache: 'maven' # Example cache, adjust as needed or remove if not using
 
-    # This is the corrected section for printing one environment variable
-    # The 'env' key is directly under the step, properly indented.
-    - name: Print a specific environment variable
-      env:
-        MY_VARIABLE: "Hello, World!"
-      run: echo "The value of MY_VARIABLE is: $MY_VARIABLE"
+      # Corrected section for printing one environment variable
+      - name: Print a specific environment variable
+        env:
+          MY_VARIABLE: "Hello, World!"
+        run: echo "The value of MY_VARIABLE is: $MY_VARIABLE"
 
-    - name: Print all environment variables
-      run: env
+      - name: Print all environment variables
+        run: env
 
-    - name: Verify Java Installation and Path
-      run: |
-        echo "JAVA_HOME is: $JAVA_HOME" # Should be set by setup-java
-        which java
-        java -version
+      - name: Verify Java Installation and Path
+        run: |
+          echo "JAVA_HOME is: $JAVA_HOME" # Should be set by setup-java
+          which java
+          java -version
 
-    - name: List files currently in the workspace
-      run: |
-        ls -la ${{ github.workspace }}
+      - name: List files currently in the workspace
+        run: |
+          ls -la ${{ github.workspace }}
