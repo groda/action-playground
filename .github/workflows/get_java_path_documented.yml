@@ -6,16 +6,12 @@ name: Debug Java Path and Environment Variables
 # It's useful for quickly identifying specific runs in the GitHub UI.
 run-name: ➡️ Java Debug Output
 
----
-
 # This section defines when the workflow should be triggered.
 # 'workflow_dispatch' means the workflow can only be run manually
 # from the 'Actions' tab in your GitHub repository.
 # No automatic triggers (like pushes or pull requests) are configured.
 on:
   workflow_dispatch
-
----
 
 # This section specifies the permissions granted to the GitHub Actions job.
 # 'contents: write' gives the workflow permission to write files to the repository,
@@ -24,8 +20,6 @@ on:
 # modify the repository (e.g., creating release assets, updating files).
 permissions:
   contents: write
-
----
 
 # This defines the jobs that will run as part of this workflow.
 # A workflow can have one or more jobs that run in parallel or sequentially.
