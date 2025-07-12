@@ -8,6 +8,9 @@ permissions:
 jobs:
   Install-Java:
     runs-on: ubuntu-latest
+    # This 'env' block (if uncommented) would set environment variables for the entire job
+    # env:
+    #   JOB_LEVEL_VAR: "This is available to all steps in this job"
     steps:
     # Install Java (see: https://github.com/actions/setup-java)
     - name: Install Java 11
@@ -16,12 +19,13 @@ jobs:
         distribution: 'temurin' # See 'Supported distributions' for available options
         java-version: '11'
         cache: 'maven' # Example cache, adjust as needed or remove if not using
+
     # This is the corrected section for printing one environment variable
+    # The 'env' key is directly under the step, properly indented.
     - name: Print a specific environment variable
       env:
         MY_VARIABLE: "Hello, World!"
       run: echo "The value of MY_VARIABLE is: $MY_VARIABLE"
-    # End of corrected section
 
     - name: Print all environment variables
       run: env
