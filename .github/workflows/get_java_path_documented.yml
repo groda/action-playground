@@ -1,0 +1,76 @@
+# This is the name of your GitHub Actions workflow.
+# It will appear in the 'Actions' tab of your GitHub repository.
+name: Debug Java Path and Environment Variables
+
+# This defines the name that will appear next to each workflow run.
+# It's useful for quickly identifying specific runs in the GitHub UI.
+run-name: ➡️ Java Debug Output
+
+---
+
+# This section defines when the workflow should be triggered.
+# 'workflow_dispatch' means the workflow can only be run manually
+# from the 'Actions' tab in your GitHub repository.
+# No automatic triggers (like pushes or pull requests) are configured.
+on:
+  workflow_dispatch
+
+---
+
+# This section specifies the permissions granted to the GitHub Actions job.
+# 'contents: write' gives the workflow permission to write files to the repository,
+# which isn't strictly necessary for just printing output to the logs,
+# but it's often included by default or if you plan to add steps that
+# modify the repository (e.g., creating release assets, updating files).
+permissions:
+  contents: write
+
+---
+
+# This defines the jobs that will run as part of this workflow.
+# A workflow can have one or more jobs that run in parallel or sequentially.
+jobs:
+  # This is the unique identifier for our single job in this workflow.
+  # You can name it anything descriptive.
+  debug-java:
+    # 'runs-on' specifies the type of runner (virtual machine) the job will execute on.
+    # 'ubuntu-latest' means it will use the latest available Ubuntu Linux runner,
+    # which comes with many common tools pre-installed, including a version of Java.
+    runs-on: ubuntu-latest
+
+    # The 'steps' section contains a sequence of tasks that the job will execute.
+    # Each item starting with a hyphen '-' is a distinct step.
+    steps:
+      # Step 1: Print all shell variables.
+      # 'set' is a shell built-in command that displays all shell variables
+      # and functions, including environment variables and local variables.
+      - name: Print all shell variables (set)
+        run: set
+
+      # Step 2: Locate the Java executable in the system's PATH.
+      # 'which java' searches for the 'java' command in the directories
+      # specified in the PATH environment variable and prints its full path.
+      - name: Locate Java executable (which java)
+        run: which java
+
+      # Step 3: Print the installed Java version.
+      # 'java -version' is a standard command to display the version
+      # information of the Java Runtime Environment (JRE) or Java Development Kit (JDK).
+      # Note: This output typically goes to stderr, but GitHub Actions captures both stdout and stderr.
+      - name: Print Java version (java -version)
+        run: java -version
+
+      # Step 4 (Optional): Print all environment variables.
+      # 'env' is a command that displays all currently set environment variables
+      # and their values. This can be useful to see variables like JAVA_HOME, PATH, etc.
+      - name: Print all environment variables (env)
+        run: env
+
+      # Step 5 (Optional): List files and directories in the workspace.
+      # 'ls -la ${{ github.workspace }}' lists all files and directories
+      # (including hidden ones, due to '-a') in long format (due to '-l')
+      # within the GitHub Actions workspace directory.
+      # '${{ github.workspace }}' is a built-in GitHub Actions context variable
+      # that points to the root directory where your repository is cloned.
+      - name: List files in workspace
+        run: ls -la ${{ github.workspace }}
