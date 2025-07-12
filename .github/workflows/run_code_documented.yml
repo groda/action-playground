@@ -1,0 +1,143 @@
+# This workflow automates the execution of a Jupyter Notebook and saves its output
+# back to the repository. It also handles dependency installation and Java setup.
+
+# Workflow's display name in the GitHub Actions UI
+name: Run Script on Data File
+
+# A more descriptive name that appears next to the workflow run in the UI.
+# This helps in quickly identifying what the run was about.
+run-name: ➡️ Run Script on Repo File
+
+# Define when this workflow should run.
+on:
+  # Trigger the workflow on 'push' events.
+  push:
+    # Specifically, only run when changes are pushed to the 'main' branch.
+    # You can list multiple branches here, e.g., ['main', 'develop'].
+    branches:
+      - main 
+
+  # Uncomment the line below if you want to allow manual triggering of this workflow
+  # from the 'Actions' tab in your GitHub repository.
+  # workflow_dispatch: # Allows manual triggering from the GitHub UI
+
+# Define the permissions required by this workflow.
+# 'contents: write' is crucial if the workflow needs to commit changes (like saving output files)
+# back to the repository. Without this, push operations would fail.
+permissions:
+  contents: write
+
+# Define the jobs that make up this workflow. A workflow can have one or more jobs.
+jobs:
+  # This is the single job defined in this workflow, named 'process-file'.
+  process-file:
+    # Specifies the type of runner (virtual environment) to use for this job.
+    # 'ubuntu-latest' provides a recent Ubuntu Linux environment.
+    runs-on: ubuntu-latest
+
+    # Define the sequence of steps to be executed within the 'process-file' job.
+    steps:
+      # Step 1: Install Java Development Kit (JDK).
+      # This is specifically included because Jupyter notebooks, or libraries they use,
+      # might depend on Java (e.g., for Apache Spark or certain data processing tools).
+      # The 'actions/setup-java' action configures the Java environment.
+      - name: Install Java 11
+        uses: actions/setup-java@v4 # Uses the official GitHub action for setting up Java.
+        with:
+          distribution: 'temurin' # Specifies the Java distribution (e.g., Temurin, AdoptOpenJDK).
+                                  # 'temurin' is a popular, open-source JDK distribution.
+          java-version: '11'      # Sets the specific Java version to install.
+
+      # Step 2: Checkout the repository's code.
+      # This is an essential step that downloads your repository's contents
+      # onto the runner, making your files (like the Jupyter notebook and requirements.txt)
+      # accessible to subsequent steps.
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Uses the official GitHub action for checking out code.
+
+      # Step 3: Set up Python environment.
+      # This step installs and configures Python on the runner, which is necessary
+      # for running Jupyter, nbconvert, and any Python scripts or notebooks.
+      - name: Set up Python
+        uses: actions/setup-python@v5 # Uses the official GitHub action for setting up Python.
+        with:
+          python-version: '3.x' # Specifies to use the latest available Python 3.x version.
+
+      # Step 4: Install Jupyter, nbconvert, and ipykernel.
+      # These are core Python packages required for executing Jupyter notebooks
+      # and converting them. 'ipykernel' is the default kernel for Python notebooks.
+      - name: Install Jupyter and nbconvert
+        run: |
+          # The 'pip install' command installs the specified Python packages globally
+          # within the runner's environment for this job.
+          pip install jupyter nbconvert ipykernel
+
+      # Step 5: Conditionally install project-specific Python requirements.
+      # This step checks for the presence of a 'requirements.txt' file in the repository
+      # and, if found, installs the dependencies listed within it. This makes the workflow
+      # robust to projects that may or may not have this file.
+      - name: Install requirements (if requirements.txt exists)
+        # The 'id' allows referencing outputs from this step in subsequent steps
+        # (though not strictly used in this example for conditional execution).
+        id: install-reqs 
+        run: |
+          # Bash conditional statement to check if 'requirements.txt' file exists (-f).
+          if [ -f requirements.txt ]; then
+            echo "requirements.txt found. Installing dependencies."
+            # Display Python version for debugging/logging.
+            python --version
+            # Install packages listed in requirements.txt.
+            python -m pip install -r requirements.txt
+            # Set a step output indicating that requirements were found and installed.
+            echo "requirements_found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "requirements.txt not found. Skipping dependency installation."
+            # Set a step output indicating that requirements were NOT found.
+            echo "requirements_found=false" >> "$GITHUB_OUTPUT"
+          fi
+          
+      # Step 6: Execute the Jupyter Notebook and save its output.
+      # This is the core task: running the specified notebook and generating
+      # a new notebook file that includes the execution outputs.
+      - name: Execute notebook and save output
+        run: |
+          # Define the name of the input notebook file.
+          INPUT_NOTEBOOK="JAVA_HOME.ipynb"
+          # Define the name for the output notebook file. It appends '_executed'
+          # before the '.ipynb' extension to the original filename.
+          OUTPUT_NOTEBOOK="${INPUT_NOTEBOOK%.ipynb}_executed.ipynb"
+
+          # Use 'jupyter nbconvert' to execute the notebook.
+          # 'sudo env PATH=$PATH' is used to ensure 'jupyter' can be found in the PATH
+          # when executed with sudo, which might be necessary in some runner environments
+          # depending on how jupyter was installed (e.g., if it's in a path only accessible by root).
+          # --log-level=ERROR: Only show error messages during conversion.
+          # --to notebook: Convert the notebook back into notebook format (but with outputs).
+          # --execute: Execute all cells in the notebook.
+          # --output "$OUTPUT_NOTEBOOK": Specifies the filename for the converted output notebook.
+          sudo env PATH=$PATH jupyter nbconvert \
+            --log-level=ERROR \
+            --to notebook \
+            --execute "$INPUT_NOTEBOOK" \
+            --output "$OUTPUT_NOTEBOOK"
+
+          echo "Notebook executed and saved as $OUTPUT_NOTEBOOK"
+
+      # Step 7: Commit the newly generated output notebook back to the repository.
+      # This step uses Git commands to add the new file, create a commit, and push
+      # it to the remote repository.
+      - name: Commit and push changes
+        run: |
+          # Configure the Git user name for the commit.
+          git config user.name "github-actions[bot]"
+          # Configure the Git user email for the commit.
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Stage all changes in the current directory (including the new output notebook).
+          git add . 
+          # Create a commit with a descriptive message.
+          # The '|| echo "No changes to commit"' part prevents the step from failing
+          # if 'git commit' finds nothing to commit (e.g., if the output notebook
+          # was identical to an existing one, though less common with executed notebooks).
+          git commit -m "Automated: Execute JAVA_HOME.ipynb and save output" || echo "No changes to commit"
+          # Push the committed changes to the remote repository.
+          git push
